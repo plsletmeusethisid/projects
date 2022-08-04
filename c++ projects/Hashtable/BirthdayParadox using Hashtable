@@ -1,0 +1,47 @@
+#include <iostream>
+#include <string>
+#include <random>
+#include "Hashtable.h"
+#include <ctime>
+using namespace std;
+
+
+string generateRandomString(int length){    //function to generate random string; it takes in a number and returns a string with the length of the input int.
+    char lowerCaseAlph[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};   //array of lower case letters
+    string randomString = "";   //initialize an empty string
+    for (int i=0; i<length; i++){   //iterates as many times as the given length
+        randomString += lowerCaseAlph[rand()%26];      //adds a char to the originally empty string every iteration
+    }
+    return randomString;    //returns the random string
+}
+
+
+int main(){
+    srand(time(0));     //srand() used to generate random numbers and random strings using the random numbers
+    int probing = 0;    //variable to keep count of how many probes occurred
+    int added = 0;      //number of items added
+    int twentythree = 0;        //variable to keep track of collisions occurring within 23 adds
+    for (int i = 0; i < 3000; ++i) {        //three thousand iterations for the sake of accuracy
+        Hashtable<int> a(true, (unsigned int)365);      //create a hashtable object every iteration
+
+        while (probing == 0){       //basically means while collision hasn't occurred
+            int length = rand()%28+1;       //generate a random number between 1 - 28
+            string random = generateRandomString(length);   //use that number to generate a random string
+            probing = a.add(random, 11);    //if probing doesn't equal to zero, then the loop will break
+            added++;                    //keep track of the number of items added
+            if (probing != 0) {         //juuuuuust in case, you know?
+                break;
+            }
+        }
+    
+        if (added <= 23){       //if less than 24 items were added, we'll increment twentythree
+            twentythree++;
+        }
+        added = 0;      //reset the variables to  be used in next iteration
+        probing = 0;
+    }
+
+    float prob = ((float)twentythree)/3000;     //convert the values to float to get decimal point answer
+    cout << prob << endl;       //output the answer
+    return 0;
+}
